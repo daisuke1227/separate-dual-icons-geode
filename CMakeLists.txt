@@ -10,6 +10,8 @@ else()
 endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+
 project(SeparateDualIcons VERSION 1.3.0)
 
 file(GLOB SOURCES
