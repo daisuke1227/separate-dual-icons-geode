@@ -2,6 +2,7 @@
 #include "Macros.hpp"
 #include <Geode/modify/CharacterColorPage.hpp>
 
+
 class $modify(MyCharacterColorPage, CharacterColorPage) {
     static void onModify(auto& self) {
         (void)self.setHookPriority("CharacterColorPage::onPlayerColor", Priority::Last);
@@ -63,6 +64,35 @@ class $modify(MyCharacterColorPage, CharacterColorPage) {
         }
     }
 
+    
+    void updateColorMode(int p0) {
+        CharacterColorPage::updateColorMode(p0);
+
+        if (GDI_GET_VALUE(bool, "2pselected", false)) {
+            auto color1 = GDI_GET_VALUE(int64_t, "color1", 0);
+            auto color2 = GDI_GET_VALUE(int64_t, "color2", 0);
+            auto colorglow = GDI_GET_VALUE(int64_t, "colorglow", 0);
+
+            for (auto [i, sprite] : CCDictionaryExt<intptr_t, ColorChannelSprite*>(m_colorButtons)) {
+                if (i == color1) {
+                    static_cast<CCNode*>(m_cursors->objectAtIndex(0))->setPosition(m_mainLayer->convertToNodeSpace(
+                        m_buttonMenu->convertToWorldSpace(sprite->getParent()->getPosition())
+                    ));
+                }
+                if (i == color2) {
+                    static_cast<CCNode*>(m_cursors->objectAtIndex(1))->setPosition(m_mainLayer->convertToNodeSpace(
+                        m_buttonMenu->convertToWorldSpace(sprite->getParent()->getPosition())
+                    ));
+                }
+                if (i == colorglow) {
+                    static_cast<CCNode*>(m_cursors->objectAtIndex(2))->setPosition(m_mainLayer->convertToNodeSpace(
+                        m_buttonMenu->convertToWorldSpace(sprite->getParent()->getPosition())
+                    ));
+                }
+            }
+        }
+    }
+
     void onPlayerColor(CCObject* sender) {
         UnlockType ut;
         auto GM = GameManager::get();
@@ -77,7 +107,7 @@ class $modify(MyCharacterColorPage, CharacterColorPage) {
         }
 
         if (GDI_GET_VALUE(bool, "2pselected", false) && GM->isColorUnlocked(sender->getTag(), ut)) {
-            const char* colorKey = "";
+            auto colorKey = "";
             switch (m_colorMode) {
                 case 0:
                     colorKey = "color1";
@@ -91,11 +121,9 @@ class $modify(MyCharacterColorPage, CharacterColorPage) {
             }
 
             if (GDI_GET_VALUE(int64_t, colorKey, 0) != sender->getTag()) {
-                static_cast<CCNode*>(m_cursors->objectAtIndex(m_colorMode))->setPosition(
-                    m_mainLayer->convertToNodeSpace(
-                        m_buttonMenu->convertToWorldSpace(static_cast<CCNode*>(sender)->getPosition())
-                    )
-                );
+                static_cast<CCNode*>(m_cursors->objectAtIndex(m_colorMode))->setPosition(m_mainLayer->convertToNodeSpace(
+                    m_buttonMenu->convertToWorldSpace(static_cast<CCNode*>(sender)->getPosition())
+                ));
                 GDI_SET_VALUE(int64_t, colorKey, sender->getTag());
             } else {
                 m_delegate->showUnlockPopup(sender->getTag(), ut);
