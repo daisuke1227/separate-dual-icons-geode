@@ -1,10 +1,9 @@
 {
-	"geode": "4.3.1",
+	"geode": "4.2.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"mac": "2.2074"
 	},
 	"version": "v1.3.1",
 	"id": "weebify.separate_dual_icons",
@@ -12,9 +11,13 @@
 	"developer": "Weebify",
 	"description": "Allows you to customize your 2nd player",
     "tags": ["gameplay", "interface", "customization"],
-	"dependencies": {
-		"geode.node-ids": ">=1.17.0"
-	},
+	"dependencies": [
+		{
+			"id": "geode.node-ids",
+			"version": ">=1.17.0",
+			"importance": "required"
+		}
+	],
     "resources": {
 		"sprites": [
 			"./image.png",
